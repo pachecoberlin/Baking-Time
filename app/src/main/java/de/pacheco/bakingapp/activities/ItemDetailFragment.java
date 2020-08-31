@@ -1,18 +1,18 @@
-package de.pacheco.bakingapp;
+package de.pacheco.bakingapp.activities;
+
+import de.pacheco.bakingapp.R;
+import de.pacheco.bakingapp.dummy.DummyContent;
 
 import android.app.Activity;
 import android.os.Bundle;
-
-import com.google.android.material.appbar.CollapsingToolbarLayout;
-
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import de.pacheco.bakingapp.dummy.DummyContent;
+import androidx.fragment.app.Fragment;
+
+import com.google.android.material.appbar.CollapsingToolbarLayout;
 
 /**
  * A fragment representing a single Item detail screen.
@@ -42,14 +42,15 @@ public class ItemDetailFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        if (getArguments().containsKey(ARG_ITEM_ID)) {
+        if (getArguments() != null && getArguments().containsKey(ARG_ITEM_ID)) {
             // Load the dummy content specified by the fragment
             // arguments. In a real-world scenario, use a Loader
             // to load content from a content provider.
-            mItem = DummyContent.ITEM_MAP.get(getArguments().getString(ARG_ITEM_ID));
-
+            mItem = DummyContent.ITEMS.get(getArguments().getInt(ARG_ITEM_ID));
             Activity activity = this.getActivity();
+            if (activity == null) {
+                return;
+            }
             CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) activity.findViewById(
                     R.id.toolbar_layout);
             if (appBarLayout != null) {

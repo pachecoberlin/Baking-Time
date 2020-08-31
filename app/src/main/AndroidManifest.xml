@@ -3,6 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="de.pacheco.bakingapp">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:fullBackupContent="@xml/backup_descriptor"
@@ -12,7 +14,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".RecipeListActivity"
+            android:name=".activities.RecipeListActivity"
             android:label="@string/title_activity_main"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -22,26 +24,26 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ItemListActivity"
+            android:name=".activities.ItemListActivity"
             android:label="@string/app_name"
-            android:parentActivityName=".RecipeListActivity"
+            android:parentActivityName=".activities.RecipeListActivity"
             android:theme="@style/AppTheme.NoActionBar"
             tools:targetApi="jelly_bean">
             <!-- TODO what is  tools:targetApi="jelly_bean"-->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="de.pacheco.bakingapp.RecipeListActivity" />
+                android:value="de.pacheco.bakingapp.activities.RecipeListActivity" />
         </activity>
         <activity
-            android:name=".ItemDetailActivity"
+            android:name=".activities.ItemDetailActivity"
             android:label="@string/title_item_detail"
-            android:parentActivityName=".ItemListActivity"
+            android:parentActivityName=".activities.ItemListActivity"
             android:theme="@style/AppTheme.NoActionBar"
             tools:targetApi="jelly_bean">
             <!-- TODO what is  tools:targetApi="jelly_bean"-->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="de.pacheco.bakingapp.ItemListActivity" />
+                android:value="de.pacheco.bakingapp.activities.ItemListActivity" />
         </activity>
     </application>
 

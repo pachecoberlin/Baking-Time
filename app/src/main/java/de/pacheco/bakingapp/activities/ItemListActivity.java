@@ -1,5 +1,6 @@
-package de.pacheco.bakingapp;
+package de.pacheco.bakingapp.activities;
 
+import de.pacheco.bakingapp.R;
 import de.pacheco.bakingapp.dummy.DummyContent;
 
 import android.content.Context;
@@ -54,13 +55,9 @@ public class ItemListActivity extends AppCompatActivity {
         }
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+        fab.setOnClickListener(
+                view -> Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show());
 
         if (findViewById(R.id.item_detail_container) != null) {
             // The detail container view will be present only in the
