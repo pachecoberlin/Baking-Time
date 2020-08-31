@@ -1,7 +1,7 @@
 package de.pacheco.bakingapp.activities;
 
 import de.pacheco.bakingapp.R;
-import de.pacheco.bakingapp.dummy.DummyContent;
+import de.pacheco.bakingapp.model.Recipe;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -22,15 +22,16 @@ import com.google.android.material.appbar.CollapsingToolbarLayout;
  */
 public class ItemDetailFragment extends Fragment {
     /**
-     * The fragment argument representing the item ID that this fragment
+     * The fragment argument representing the Step ID that this fragment
      * represents.
      */
-    public static final String ARG_ITEM_ID = "item_id";
+    public static final String STEPS_ID = "steps_id";
 
     /**
-     * The dummy content this fragment is presenting.
+     * The Recipe and Step number this fragment is presenting.
      */
-    private DummyContent.DummyItem mItem;
+    private Recipe recipe;
+    private int stepsId;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -42,19 +43,17 @@ public class ItemDetailFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null && getArguments().containsKey(ARG_ITEM_ID)) {
-            // Load the dummy content specified by the fragment
-            // arguments. In a real-world scenario, use a Loader
-            // to load content from a content provider.
-            mItem = DummyContent.ITEMS.get(getArguments().getInt(ARG_ITEM_ID));
+        if (getArguments() != null && getArguments().containsKey(STEPS_ID)) {
+            stepsId = getArguments().getInt(STEPS_ID);
             Activity activity = this.getActivity();
             if (activity == null) {
                 return;
             }
+            recipe = activity.getIntent().getParcelableExtra(getString(R.string.recipe));
             CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) activity.findViewById(
                     R.id.toolbar_layout);
             if (appBarLayout != null) {
-                appBarLayout.setTitle(mItem.content);
+                appBarLayout.setTitle(recipe.steps.get(stepsId).shortDescription);
             }
         }
     }
@@ -64,9 +63,10 @@ public class ItemDetailFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.item_detail, container, false);
 
-        // Show the dummy content as text in a TextView.
-        if (mItem != null) {
-            ((TextView) rootView.findViewById(R.id.item_detail)).setText(mItem.details);
+        // TODO Show the recipe content as text in a TextView. and the movie in the exoplayer
+        if (recipe != null) {
+            ((TextView) rootView.findViewById(R.id.item_detail)).setText(
+                    recipe.steps.get(stepsId).description);
         }
 
         return rootView;

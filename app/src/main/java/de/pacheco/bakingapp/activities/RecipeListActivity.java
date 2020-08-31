@@ -5,11 +5,9 @@ import de.pacheco.bakingapp.model.Recipe;
 import de.pacheco.bakingapp.model.RecipesViewModel;
 import de.pacheco.bakingapp.utils.Utils;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,7 +55,7 @@ public class RecipeListActivity extends AppCompatActivity {
         setupRecyclerView((RecyclerView) recyclerView);
         setupViewModel();
     }
-
+    //TODO onSave und onLoad
     private void setupViewModel() {
         RecipesViewModel recipesViewModel = new ViewModelProvider(this).get(RecipesViewModel.class);
         recipesViewModel.getRecipes().observe(this, list -> {
@@ -78,10 +76,9 @@ public class RecipeListActivity extends AppCompatActivity {
             extends RecyclerView.Adapter<RecipeRecyclerViewAdapter.ViewHolder> {
         private final RecipeListActivity recipeListActivity;
         private final View.OnClickListener mOnClickListener = view -> {
-            Recipe item = (Recipe) view.getTag();
             Context context = view.getContext();
-            Intent intent = new Intent(context, ItemDetailActivity.class);
-            intent.putExtra(ItemDetailFragment.ARG_ITEM_ID, item.id);
+            Intent intent = new Intent(context, ItemListActivity.class);
+            intent.putExtra(context.getString(R.string.recipe), (Recipe) view.getTag());
             context.startActivity(intent);
         };
         private List<Recipe> mValues;
@@ -96,7 +93,7 @@ public class RecipeListActivity extends AppCompatActivity {
         public RecipeRecyclerViewAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.recipe_list_item, parent, false);
-            return new RecipeRecyclerViewAdapter.ViewHolder(view, recipeListActivity);
+            return new RecipeRecyclerViewAdapter.ViewHolder(view);
         }
 
         @Override
@@ -121,28 +118,18 @@ public class RecipeListActivity extends AppCompatActivity {
             mValues = recipes;
         }
 
-        static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        static class ViewHolder extends RecyclerView.ViewHolder {
             final MaterialCardView mIdView;
             final ImageView recipeImage;
             final TextView recipeTitle;
             final TextView recipeSubtitle;
-            private final Activity activity;
 
-            ViewHolder(View view, Activity activity) {
+            ViewHolder(View view) {
                 super(view);
                 mIdView = view.findViewById(R.id.recipe_list_item_card);
                 recipeImage = view.findViewById(R.id.recipe_image);
                 recipeTitle = view.findViewById(R.id.recipe_title);
                 recipeSubtitle = view.findViewById(R.id.recipe_subtitle);
-                this.activity = activity;
-            }
-
-            @Override
-            public void onClick(View view) {
-                Intent intentToStartDetailActivity = new Intent(activity, ItemListActivity.class);
-                intentToStartDetailActivity.putExtra(activity.getString(R.string.recipe),
-                        (Parcelable) itemView.getTag());
-                activity.startActivity(intentToStartDetailActivity);
             }
         }
     }

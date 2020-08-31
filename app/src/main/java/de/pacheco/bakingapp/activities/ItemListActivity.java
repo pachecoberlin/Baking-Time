@@ -1,7 +1,8 @@
 package de.pacheco.bakingapp.activities;
 
 import de.pacheco.bakingapp.R;
-import de.pacheco.bakingapp.dummy.DummyContent;
+import de.pacheco.bakingapp.model.Recipe;
+import de.pacheco.bakingapp.model.Steps;
 
 import android.content.Context;
 import android.content.Intent;
@@ -66,10 +67,10 @@ public class ItemListActivity extends AppCompatActivity {
             // activity should be in two-pane mode.
             mTwoPane = true;
         }
-
+        Recipe recipe = getIntent().getParcelableExtra(this.getString(R.string.recipe));
         View recyclerView = findViewById(R.id.item_list);
         assert recyclerView != null;
-        setupRecyclerView((RecyclerView) recyclerView);
+        setupRecyclerView((RecyclerView) recyclerView, recipe);
     }
 
     @Override
@@ -82,24 +83,27 @@ public class ItemListActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
+    private void setupRecyclerView(@NonNull RecyclerView recyclerView, Recipe recipe) {
         recyclerView.setAdapter(
-                new SimpleItemRecyclerViewAdapter(this, DummyContent.ITEMS, mTwoPane));
+                new SimpleItemRecyclerViewAdapter(this, recipe, mTwoPane));
     }
 
     public static class SimpleItemRecyclerViewAdapter
             extends RecyclerView.Adapter<SimpleItemRecyclerViewAdapter.ViewHolder> {
 
         private final ItemListActivity mParentActivity;
-        private final List<DummyContent.DummyItem> mValues;
+        private final List<Steps> mValues;
         private final boolean mTwoPane;
+        private final Recipe recipe;
         private final View.OnClickListener mOnClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DummyContent.DummyItem item = (DummyContent.DummyItem) view.getTag();
+                Steps steps = (Steps) view.getTag();
                 if (mTwoPane) {
                     Bundle arguments = new Bundle();
-                    arguments.putString(ItemDetailFragment.ARG_ITEM_ID, item.id);
+                    arguments.putInt(ItemDetailFragment.STEPS_ID, steps.id);
+                    arguments.putParcelable(view.getContext().getString(R.string.recipe),
+                            recipe);
                     ItemDetailFragment fragment = new ItemDetailFragment();
                     fragment.setArguments(arguments);
                     mParentActivity.getSupportFragmentManager().beginTransaction()
@@ -108,19 +112,20 @@ public class ItemListActivity extends AppCompatActivity {
                 } else {
                     Context context = view.getContext();
                     Intent intent = new Intent(context, ItemDetailActivity.class);
-                    intent.putExtra(ItemDetailFragment.ARG_ITEM_ID, item.id);
+                    intent.putExtra(ItemDetailFragment.STEPS_ID, steps.id);
+                    intent.putExtra(context.getString(R.string.recipe), recipe);
                     context.startActivity(intent);
                 }
             }
         };
 
-        SimpleItemRecyclerViewAdapter(ItemListActivity parent,
-                                      List<DummyContent.DummyItem> items,
-                                      boolean twoPane) {
-            mValues = items;
+        SimpleItemRecyclerViewAdapter(ItemListActivity parent, Recipe recipe, boolean twoPane) {
+            mValues = recipe.steps;
+            this.recipe = recipe;
             mParentActivity = parent;
             mTwoPane = twoPane;
         }
+        //TODO onSave und onLoad
 
         @NonNull
         @Override
@@ -132,9 +137,8 @@ public class ItemListActivity extends AppCompatActivity {
 
         @Override
         public void onBindViewHolder(final ViewHolder holder, int position) {
-            holder.mIdView.setText(mValues.get(position).id);
-            holder.mContentView.setText(mValues.get(position).content);
-
+            holder.mIdView.setText(String.valueOf(mValues.get(position).id));
+            holder.mContentView.setText(mValues.get(position).shortDescription);
             holder.itemView.setTag(mValues.get(position));
             holder.itemView.setOnClickListener(mOnClickListener);
         }

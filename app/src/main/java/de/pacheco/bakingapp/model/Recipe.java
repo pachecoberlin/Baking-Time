@@ -6,9 +6,35 @@ import android.os.Parcelable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.LinkedList;
 import java.util.List;
 
 public class Recipe implements Parcelable {
+
+    @SerializedName("id")
+    @Expose
+    public int id;
+
+    @SerializedName("ingredients")
+    @Expose
+    public List<Ingredients> ingredients;
+
+    @SerializedName("steps")
+    @Expose
+    public List<Steps> steps;
+
+    @SerializedName("name")
+    @Expose
+    public String name;
+
+    @SerializedName("servings")
+    @Expose
+    public int servings;
+
+    @SerializedName("image")
+    @Expose
+    public String image;
+
     public static final Creator<Recipe> CREATOR = new Creator<Recipe>() {
         @Override
         public Recipe createFromParcel(Parcel in) {
@@ -20,30 +46,16 @@ public class Recipe implements Parcelable {
             return new Recipe[size];
         }
     };
-    @SerializedName("id")
-    @Expose
-    public int id;
-    @SerializedName("ingredients")
-    @Expose
-    public List<Ingredients> ingredients;
-    @SerializedName("steps")
-    @Expose
-    public List<Steps> steps;
-    @SerializedName("name")
-    @Expose
-    public String name;
-    @SerializedName("servings")
-    @Expose
-    public int servings;
-    @SerializedName("image")
-    @Expose
-    public String image;
 
     protected Recipe(Parcel in) {
         id = in.readInt();
         name = in.readString();
         servings = in.readInt();
         image = in.readString();
+        ingredients = new LinkedList<>();
+        in.readList(ingredients, Ingredients.class.getClassLoader());
+        steps = new LinkedList<>();
+        in.readList(steps, Steps.class.getClassLoader());
     }
 
     @Override
@@ -57,5 +69,7 @@ public class Recipe implements Parcelable {
         parcel.writeString(name);
         parcel.writeInt(servings);
         parcel.writeString(image);
+        parcel.writeList(ingredients);
+        parcel.writeList(steps);
     }
 }
