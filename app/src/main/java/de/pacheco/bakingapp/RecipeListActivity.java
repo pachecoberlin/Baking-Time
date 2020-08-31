@@ -1,6 +1,7 @@
 package de.pacheco.bakingapp;
 
 import de.pacheco.bakingapp.dummy.DummyContent;
+import de.pacheco.bakingapp.utils.Utils;
 
 import android.content.Context;
 import android.content.Intent;
@@ -13,8 +14,10 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.volley.toolbox.NetworkImageView;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -45,6 +48,8 @@ public class RecipeListActivity extends AppCompatActivity {
     }
 
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
+        recyclerView.setLayoutManager(new GridLayoutManager(this, Utils.calculateNoOfColumns(this),
+                GridLayoutManager.VERTICAL, false));
         recyclerView.setAdapter(
                 new RecipeRecyclerViewAdapter(DummyContent.ITEMS));
     }
@@ -80,7 +85,6 @@ public class RecipeListActivity extends AppCompatActivity {
         @Override
         public void onBindViewHolder(final RecipeRecyclerViewAdapter.ViewHolder holder, int position) {
 // TODO set informations into card
-
             holder.itemView.setTag(mValues.get(position));
             holder.itemView.setOnClickListener(mOnClickListener);
         }
@@ -92,10 +96,16 @@ public class RecipeListActivity extends AppCompatActivity {
 
         static class ViewHolder extends RecyclerView.ViewHolder {
             final MaterialCardView mIdView;
+            final NetworkImageView recipeImage;
+            final TextView recipeTitle;
+            final TextView recipeSubtitle;
 
             ViewHolder(View view) {
                 super(view);
-                mIdView = (MaterialCardView) view.findViewById(R.id.recipe_list_item_card);
+                mIdView = view.findViewById(R.id.recipe_list_item_card);
+                recipeImage = view.findViewById(R.id.recipe_image);
+                recipeTitle = view.findViewById(R.id.recipe_title);
+                recipeSubtitle = view.findViewById(R.id.recipe_subtitle);
             }
         }
     }
