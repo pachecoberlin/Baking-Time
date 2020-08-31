@@ -95,7 +95,6 @@ public class ItemListActivity extends AppCompatActivity {
                     Context context = view.getContext();
                     Intent intent = new Intent(context, ItemDetailActivity.class);
                     intent.putExtra(ItemDetailFragment.ARG_ITEM_ID, item.id);
-
                     context.startActivity(intent);
                 }
             }
@@ -109,10 +108,11 @@ public class ItemListActivity extends AppCompatActivity {
             mTwoPane = twoPane;
         }
 
+        @NonNull
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.item_list_content, parent, false);
+                    .inflate(R.layout.item_list_item, parent, false);
             return new ViewHolder(view);
         }
 
@@ -130,14 +130,14 @@ public class ItemListActivity extends AppCompatActivity {
             return mValues.size();
         }
 
-        class ViewHolder extends RecyclerView.ViewHolder {
+        static class ViewHolder extends RecyclerView.ViewHolder {
             final TextView mIdView;
             final TextView mContentView;
 
             ViewHolder(View view) {
                 super(view);
-                mIdView = (TextView) view.findViewById(R.id.id_text);
-                mContentView = (TextView) view.findViewById(R.id.content);
+                mIdView = (TextView) view.findViewById(R.id.item_list_item_header);
+                mContentView = (TextView) view.findViewById(R.id.item_list_item_content);
             }
         }
     }
