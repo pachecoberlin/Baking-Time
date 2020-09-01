@@ -68,7 +68,7 @@ public class RecipeListActivity extends AppCompatActivity {
         private final RecipeListActivity recipeListActivity;
         private final View.OnClickListener mOnClickListener = view -> {
             Context context = view.getContext();
-            Intent intent = new Intent(context, ItemListActivity.class);
+            Intent intent = new Intent(context, StepListActivity.class);
             intent.putExtra(context.getString(R.string.recipe), (Recipe) view.getTag());
             context.startActivity(intent);
         };

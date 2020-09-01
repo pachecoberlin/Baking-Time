@@ -10,7 +10,7 @@
     android:divider="?android:attr/dividerHorizontal"
     android:orientation="horizontal"
     android:showDividers="middle"
-    tools:context=".activities.ItemListActivity">
+    tools:context=".activities.StepListActivity">
 
     <!--
     This layout is a two-pane layout for the Items master/detail flow.
@@ -24,8 +24,8 @@
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         app:layoutManager="LinearLayoutManager"
-        tools:context="de.pacheco.bakingapp.activities.ItemListActivity"
-        tools:listitem="@layout/item_list_item" />
+        tools:context="de.pacheco.bakingapp.activities.StepListActivity"
+        tools:listitem="@layout/step_list_item" />
 
     <FrameLayout
         android:id="@+id/item_detail_container"

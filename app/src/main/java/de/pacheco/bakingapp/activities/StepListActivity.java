@@ -30,11 +30,11 @@ import java.util.List;
  * An activity representing a list of Items. This activity
  * has different presentations for handset and tablet-size devices. On
  * handsets, the activity presents a list of items, which when touched,
- * lead to a {@link ItemDetailActivity} representing
+ * lead to a {@link StepDetailActivity} representing
  * item details. On tablets, the activity presents the list of items and
  * item details side-by-side using two vertical panes.
  */
-public class ItemListActivity extends AppCompatActivity {
+public class StepListActivity extends AppCompatActivity {
 
     /**
      * Whether or not the activity is in two-pane mode, i.e. running on a tablet
@@ -46,7 +46,7 @@ public class ItemListActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_item_list);
+        setContentView(R.layout.activity_step_list);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -74,7 +74,7 @@ public class ItemListActivity extends AppCompatActivity {
         assert recyclerView != null;
         if (recipe == null) {
             SharedPreferences sp = getSharedPreferences(getString(R.string.recipe), 0);
-            int recipeNumber = sp.getInt(ItemDetailFragment.RECIPE_ID, -1);
+            int recipeNumber = sp.getInt(StepDetailFragment.RECIPE_ID, -1);
             recipe = RecipeListActivity.recipes.get(recipeNumber - 1);
         }
         if (recipe == null) {
@@ -116,7 +116,7 @@ public class ItemListActivity extends AppCompatActivity {
 
     public static class SimpleItemRecyclerViewAdapter
             extends RecyclerView.Adapter<SimpleItemRecyclerViewAdapter.ViewHolder> {
-        private final ItemListActivity mParentActivity;
+        private final StepListActivity mParentActivity;
         private final List<Steps> mValues;
         private final boolean mTwoPane;
         private final Recipe recipe;
@@ -126,25 +126,25 @@ public class ItemListActivity extends AppCompatActivity {
                 Steps steps = (Steps) view.getTag();
                 if (mTwoPane) {
                     Bundle arguments = new Bundle();
-                    arguments.putInt(ItemDetailFragment.STEPS_ID, steps.id);
+                    arguments.putInt(StepDetailFragment.STEPS_ID, steps.id);
                     arguments.putParcelable(view.getContext().getString(R.string.recipe),
                             recipe);
-                    ItemDetailFragment fragment = new ItemDetailFragment();
+                    StepDetailFragment fragment = new StepDetailFragment();
                     fragment.setArguments(arguments);
                     mParentActivity.getSupportFragmentManager().beginTransaction()
                             .replace(R.id.item_detail_container, fragment)
                             .commit();
                 } else {
                     Context context = view.getContext();
-                    Intent intent = new Intent(context, ItemDetailActivity.class);
-                    intent.putExtra(ItemDetailFragment.STEPS_ID, steps.id);
+                    Intent intent = new Intent(context, StepDetailActivity.class);
+                    intent.putExtra(StepDetailFragment.STEPS_ID, steps.id);
                     intent.putExtra(context.getString(R.string.recipe), recipe);
                     context.startActivity(intent);
                 }
             }
         };
 
-        SimpleItemRecyclerViewAdapter(ItemListActivity parent, Recipe recipe, boolean twoPane) {
+        SimpleItemRecyclerViewAdapter(StepListActivity parent, Recipe recipe, boolean twoPane) {
             mValues = recipe.steps;
             this.recipe = recipe;
             mParentActivity = parent;
@@ -155,7 +155,7 @@ public class ItemListActivity extends AppCompatActivity {
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.item_list_item, parent, false);
+                    .inflate(R.layout.step_list_item, parent, false);
             return new ViewHolder(view);
         }
 

@@ -21,7 +21,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activities.ItemListActivity"
+            android:name=".activities.StepListActivity"
             android:label="@string/recipe_name"
             android:parentActivityName=".activities.RecipeListActivity"
             android:theme="@style/AppTheme.NoActionBar"
@@ -32,14 +32,14 @@
                 android:value="de.pacheco.bakingapp.activities.RecipeListActivity" />
         </activity>
         <activity
-            android:name=".activities.ItemDetailActivity"
-            android:parentActivityName=".activities.ItemListActivity"
+            android:name=".activities.StepDetailActivity"
+            android:parentActivityName=".activities.StepListActivity"
             android:theme="@style/AppTheme.NoActionBar"
             tools:targetApi="jelly_bean">
             <!-- TODO what is  tools:targetApi="jelly_bean"-->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="de.pacheco.bakingapp.activities.ItemListActivity" />
+                android:value="de.pacheco.bakingapp.activities.StepListActivity" />
         </activity>
     </application>
 </manifest>

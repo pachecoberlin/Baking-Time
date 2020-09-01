@@ -17,11 +17,11 @@ import com.google.android.material.appbar.CollapsingToolbarLayout;
 
 /**
  * A fragment representing a single Item detail screen.
- * This fragment is either contained in a {@link ItemListActivity}
- * in two-pane mode (on tablets) or a {@link ItemDetailActivity}
+ * This fragment is either contained in a {@link StepListActivity}
+ * in two-pane mode (on tablets) or a {@link StepDetailActivity}
  * on handsets.
  */
-public class ItemDetailFragment extends Fragment {
+public class StepDetailFragment extends Fragment {
     /**
      * The fragment argument representing the Step ID that this fragment
      * represents.
@@ -39,7 +39,7 @@ public class ItemDetailFragment extends Fragment {
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
-    public ItemDetailFragment() {
+    public StepDetailFragment() {
     }
 
     @Override
@@ -68,7 +68,7 @@ public class ItemDetailFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.item_detail, container, false);
+        View rootView = inflater.inflate(R.layout.step_detail, container, false);
         // TODO Show the recipe content as text in a TextView. and the movie in the exoplayer
         if (recipe != null) {
             ((TextView) rootView.findViewById(R.id.item_detail)).setText(
