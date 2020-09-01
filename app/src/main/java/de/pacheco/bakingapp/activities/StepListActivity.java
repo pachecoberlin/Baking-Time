@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -15,14 +16,13 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.NavUtils;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 
 import java.util.List;
 
@@ -41,61 +41,57 @@ public class StepListActivity extends AppCompatActivity {
      * device.
      */
     private boolean mTwoPane;
-    private Recipe recipe;
+    private static final String BUNDLE_LAYOUT = "BUNDLE_LAYOUT";
+
+    private LinearLayoutManager layoutManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_step_list);
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         toolbar.setTitle(getTitle());
-
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(
-                view -> Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show());
-
         if (findViewById(R.id.item_detail_container) != null) {
-            // The detail container view will be present only in the
-            // large-screen layouts (res/values-w900dp).
-            // If this view is present, then the
-            // activity should be in two-pane mode.
             mTwoPane = true;
         }
-        recipe = getIntent().getParcelableExtra(this.getString(R.string.recipe));
-        View recyclerView = findViewById(R.id.item_list);
+        Recipe recipe = getIntent().getParcelableExtra(this.getString(R.string.recipe));
+        RecyclerView recyclerView = findViewById(R.id.item_list);
         assert recyclerView != null;
+        layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
         if (recipe == null) {
             SharedPreferences sp = getSharedPreferences(getString(R.string.recipe), 0);
             int recipeNumber = sp.getInt(StepDetailFragment.RECIPE_ID, -1);
             recipe = RecipeListActivity.recipes.get(recipeNumber - 1);
+            if (recipe == null) {
+                return;
+            }
+            int stepId = sp.getInt(StepDetailFragment.STEPS_ID, 0);
+            int scrollPosition = Math.min(stepId, recipe.steps.size() - 1);
+            layoutManager.scrollToPosition(scrollPosition);
         }
-        if (recipe == null) {
-            return;
-        }
+
         setTitle(recipe.name);
-        setupRecyclerView((RecyclerView) recyclerView, recipe);
+        setupRecyclerView(recyclerView, recipe);
     }
 
     @Override
-    public void onBackPressed() {
-        Intent intent = new Intent();
-        intent.putExtra(getString(R.string.recipe), recipe);
-        setResult(RESULT_OK, intent);
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(BUNDLE_LAYOUT,
+                layoutManager.onSaveInstanceState());
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK) {
-            recipe = data.getParcelableExtra(getString(R.string.recipe));
+    public void onRestoreInstanceState(@Nullable Bundle savedInstanceState) {
+        if (savedInstanceState != null) {
+            super.onRestoreInstanceState(savedInstanceState);
+            Parcelable savedRecyclerLayoutState = savedInstanceState.getParcelable(BUNDLE_LAYOUT);
+            layoutManager.onRestoreInstanceState(savedRecyclerLayoutState);
         }
     }
 

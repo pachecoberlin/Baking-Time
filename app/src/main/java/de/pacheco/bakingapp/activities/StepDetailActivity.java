@@ -28,10 +28,16 @@ public class StepDetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_step_detail);
         Toolbar toolbar = (Toolbar) findViewById(R.id.detail_toolbar);
         setSupportActionBar(toolbar);
+//TODO implement buttons
+        FloatingActionButton nextStep = (FloatingActionButton) findViewById(R.id.next_step);
+        nextStep.setOnClickListener(
+                view -> Snackbar.make(view, "Replace with your own detail action",
+                        Snackbar.LENGTH_LONG).setAction("Action", null).show());
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(view -> Snackbar.make(view, "Replace with your own detail action",
-                Snackbar.LENGTH_LONG).setAction("Action", null).show());
+        FloatingActionButton previousStep = (FloatingActionButton) findViewById(R.id.previous_step);
+        previousStep.setOnClickListener(
+                view -> Snackbar.make(view, "Replace with your own detail action",
+                        Snackbar.LENGTH_LONG).setAction("Action", null).show());
 
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {

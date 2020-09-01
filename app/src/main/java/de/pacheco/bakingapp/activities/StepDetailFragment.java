@@ -2,6 +2,8 @@ package de.pacheco.bakingapp.activities;
 
 import de.pacheco.bakingapp.R;
 import de.pacheco.bakingapp.model.Recipe;
+import de.pacheco.bakingapp.model.Steps;
+import de.pacheco.bakingapp.utils.Utils;
 
 import android.app.Activity;
 import android.content.SharedPreferences;
@@ -12,8 +14,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
-
-import com.google.android.material.appbar.CollapsingToolbarLayout;
 
 /**
  * A fragment representing a single Item detail screen.
@@ -33,7 +33,7 @@ public class StepDetailFragment extends Fragment {
      * The Recipe and Step number this fragment is presenting.
      */
     private Recipe recipe;
-    private int stepsId;
+    private Steps step;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -46,22 +46,23 @@ public class StepDetailFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null && getArguments().containsKey(STEPS_ID)) {
-            stepsId = getArguments().getInt(STEPS_ID);
+            int stepsId = getArguments().getInt(STEPS_ID);
             Activity activity = this.getActivity();
             if (activity == null) {
                 return;
             }
             recipe = activity.getIntent().getParcelableExtra(getString(R.string.recipe));
-            CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) activity.findViewById(
-                    R.id.toolbar_layout);
-            if (appBarLayout != null) {
-                appBarLayout.setTitle(recipe.steps.get(stepsId).shortDescription);
+            if (recipe == null) {
+                return;
             }
+            step = Utils.getStep(recipe.steps, stepsId);
+            TextView title = activity.findViewById(R.id.detail_title);
+            title.setText(this.step.shortDescription);
             SharedPreferences sp = activity.getSharedPreferences(getString(R.string.recipe), 0);
             SharedPreferences.Editor editor = sp.edit();
             editor.putInt(RECIPE_ID, recipe.id);
+            editor.putInt(STEPS_ID, stepsId);
             editor.apply();
-//            editor.commit();
         }
     }
 
@@ -72,7 +73,7 @@ public class StepDetailFragment extends Fragment {
         // TODO Show the recipe content as text in a TextView. and the movie in the exoplayer
         if (recipe != null) {
             ((TextView) rootView.findViewById(R.id.item_detail)).setText(
-                    recipe.steps.get(stepsId).description);
+                    step.description);
         }
         return rootView;
     }
