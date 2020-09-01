@@ -6,6 +6,7 @@ import de.pacheco.bakingapp.model.Steps;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -40,6 +41,7 @@ public class ItemListActivity extends AppCompatActivity {
      * device.
      */
     private boolean mTwoPane;
+    private Recipe recipe;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,10 +69,34 @@ public class ItemListActivity extends AppCompatActivity {
             // activity should be in two-pane mode.
             mTwoPane = true;
         }
-        Recipe recipe = getIntent().getParcelableExtra(this.getString(R.string.recipe));
+        recipe = getIntent().getParcelableExtra(this.getString(R.string.recipe));
         View recyclerView = findViewById(R.id.item_list);
         assert recyclerView != null;
+        if (recipe == null) {
+            SharedPreferences sp = getSharedPreferences(getString(R.string.recipe), 0);
+            int recipeNumber = sp.getInt(ItemDetailFragment.RECIPE_ID, -1);
+            recipe = RecipeListActivity.recipes.get(recipeNumber - 1);
+        }
+        if (recipe == null) {
+            return;
+        }
+        setTitle(recipe.name);
         setupRecyclerView((RecyclerView) recyclerView, recipe);
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent();
+        intent.putExtra(getString(R.string.recipe), recipe);
+        setResult(RESULT_OK, intent);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            recipe = data.getParcelableExtra(getString(R.string.recipe));
+        }
     }
 
     @Override
@@ -90,7 +116,6 @@ public class ItemListActivity extends AppCompatActivity {
 
     public static class SimpleItemRecyclerViewAdapter
             extends RecyclerView.Adapter<SimpleItemRecyclerViewAdapter.ViewHolder> {
-
         private final ItemListActivity mParentActivity;
         private final List<Steps> mValues;
         private final boolean mTwoPane;
@@ -125,7 +150,6 @@ public class ItemListActivity extends AppCompatActivity {
             mParentActivity = parent;
             mTwoPane = twoPane;
         }
-        //TODO onSave und onLoad
 
         @NonNull
         @Override

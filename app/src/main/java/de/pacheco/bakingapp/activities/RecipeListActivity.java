@@ -22,7 +22,6 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.card.MaterialCardView;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.squareup.picasso.Picasso;
 
 import java.util.Collections;
@@ -34,7 +33,7 @@ import java.util.List;
 public class RecipeListActivity extends AppCompatActivity {
 
     private RecipeRecyclerViewAdapter recipeRecyclerViewAdapter;
-    private List<Recipe> recipes = Collections.emptyList();
+    public static List<Recipe> recipes = Collections.emptyList();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,20 +41,12 @@ public class RecipeListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_recipe_list);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(view -> {
-            Context context = view.getContext();
-            Intent intent = new Intent(context, ItemListActivity.class);
-            context.startActivity(intent);
-        });
-
         View recyclerView = findViewById(R.id.recipe_list);
         assert recyclerView != null;
         setupRecyclerView((RecyclerView) recyclerView);
         setupViewModel();
     }
-    //TODO onSave und onLoad
+
     private void setupViewModel() {
         RecipesViewModel recipesViewModel = new ViewModelProvider(this).get(RecipesViewModel.class);
         recipesViewModel.getRecipes().observe(this, list -> {

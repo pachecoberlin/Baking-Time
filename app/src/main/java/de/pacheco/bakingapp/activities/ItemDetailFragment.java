@@ -4,6 +4,7 @@ import de.pacheco.bakingapp.R;
 import de.pacheco.bakingapp.model.Recipe;
 
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,7 +26,8 @@ public class ItemDetailFragment extends Fragment {
      * The fragment argument representing the Step ID that this fragment
      * represents.
      */
-    public static final String STEPS_ID = "steps_id";
+    public static final String STEPS_ID = "stepsID";
+    public static final String RECIPE_ID = "recipeID";
 
     /**
      * The Recipe and Step number this fragment is presenting.
@@ -55,20 +57,23 @@ public class ItemDetailFragment extends Fragment {
             if (appBarLayout != null) {
                 appBarLayout.setTitle(recipe.steps.get(stepsId).shortDescription);
             }
+            SharedPreferences sp = activity.getSharedPreferences(getString(R.string.recipe), 0);
+            SharedPreferences.Editor editor = sp.edit();
+            editor.putInt(RECIPE_ID, recipe.id);
+            editor.apply();
+//            editor.commit();
         }
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.item_detail, container, false);
 
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.item_detail, container, false);
         // TODO Show the recipe content as text in a TextView. and the movie in the exoplayer
         if (recipe != null) {
             ((TextView) rootView.findViewById(R.id.item_detail)).setText(
                     recipe.steps.get(stepsId).description);
         }
-
         return rootView;
     }
 }

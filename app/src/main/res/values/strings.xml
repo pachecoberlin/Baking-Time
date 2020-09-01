@@ -1,7 +1,6 @@
 <resources>
-    <string name="app_name">RECEIPE NAME</string>
-    <string name="title_item_detail">RECEIPE NAME</string>
-    <string name="title_activity_main">Baking Time</string>
+    <string name="recipe_name">RECEIPE NAME</string>
+    <string name="app_name">Baking Time</string>
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>
     <string name="second_fragment_label">Second Fragment</string>

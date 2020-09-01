@@ -2,9 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="de.pacheco.bakingapp">
-
     <uses-permission android:name="android.permission.INTERNET" />
-
     <application
         android:allowBackup="true"
         android:fullBackupContent="@xml/backup_descriptor"
@@ -15,17 +13,16 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".activities.RecipeListActivity"
-            android:label="@string/title_activity_main"
+            android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name=".activities.ItemListActivity"
-            android:label="@string/app_name"
+            android:label="@string/recipe_name"
             android:parentActivityName=".activities.RecipeListActivity"
             android:theme="@style/AppTheme.NoActionBar"
             tools:targetApi="jelly_bean">
@@ -36,7 +33,6 @@
         </activity>
         <activity
             android:name=".activities.ItemDetailActivity"
-            android:label="@string/title_item_detail"
             android:parentActivityName=".activities.ItemListActivity"
             android:theme="@style/AppTheme.NoActionBar"
             tools:targetApi="jelly_bean">
@@ -46,5 +42,4 @@
                 android:value="de.pacheco.bakingapp.activities.ItemListActivity" />
         </activity>
     </application>
-
 </manifest>
