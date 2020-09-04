@@ -15,6 +15,20 @@
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@+id/item_detail_scrollview"
         app:layout_constraintStart_toStartOf="parent"
+        android:visibility="invisible"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/step_image"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:adjustViewBounds="true"
+        android:background="@drawable/ic_food"
+        android:contentDescription="@string/image_of_food"
+        android:scaleType="centerCrop"
+        app:layout_constraintBottom_toTopOf="@+id/item_detail_scrollview"
+        app:layout_constraintEnd_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.core.widget.NestedScrollView
