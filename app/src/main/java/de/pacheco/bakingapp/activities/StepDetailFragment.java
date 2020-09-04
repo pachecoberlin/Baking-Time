@@ -57,17 +57,19 @@ public class StepDetailFragment extends Fragment {
     /**
      * The Recipe and Step number this fragment is presenting.
      */
-    private Recipe recipe;
+    protected Recipe recipe;
     private Steps step;
     private FragmentActivity activity;
     private PlayerView playerView;
-    private static SimpleExoPlayer player;
+    private SimpleExoPlayer player;
     private static boolean playWhenReady = true;
     private static int currentWindow = 0;
     private static long playbackPosition = 0;
     private String urlString;
     private boolean isVideo = false;
     private PlaybackStateListener playbackStateListener;
+    private TextView title;
+    private View rootView;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -89,18 +91,34 @@ public class StepDetailFragment extends Fragment {
             if (recipe == null) {
                 return;
             }
+            //TODO das muss in on pause ode so
             SharedPreferences sp = activity.getSharedPreferences(getString(R.string.recipe), 0);
             SharedPreferences.Editor editor = sp.edit();
             editor.putInt(RECIPE_ID, recipe.id);
             editor.putInt(STEPS_ID, stepsId);
             editor.apply();
             step = Utils.getStep(recipe.steps, stepsId);
-            TextView title = activity.findViewById(R.id.detail_title);
-            if (title == null) {
-                return;
-            }
-            title.setText(this.step.shortDescription);
+            title = activity.findViewById(R.id.detail_title);
+            setTitle();
         }
+    }
+
+    private void setTitle() {
+        if (title == null) {
+            return;
+        }
+        title.setText(step.shortDescription);
+    }
+
+    public void refresh(int increment) {
+        if (recipe == null || step == null) {
+            return;
+        }
+        int temp = step.id + increment;
+        int stepId = temp < 0 || temp >= recipe.steps.size() ? 0 : temp;
+        this.step = Utils.getStep(recipe.steps, stepId);
+        setTitle();
+        setStepContents();
     }
 
     /**
@@ -130,14 +148,18 @@ public class StepDetailFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.step_detail, container, false);
+        rootView = inflater.inflate(R.layout.step_detail, container, false);
+        setStepContents();
+        return rootView;
+    }
+
+    private void setStepContents() {
         if (recipe != null) {
             TextView textView = rootView.findViewById(R.id.item_detail);
             String text = step.id == 0 ? getIngredients(recipe) : step.description;
             textView.setText(text);
             setupPlayer(rootView);
         }
-        return rootView;
     }
 
     private String getIngredients(Recipe recipe) {
@@ -175,13 +197,17 @@ public class StepDetailFragment extends Fragment {
         }
     }
 
-    private void switchToImageOrVideo(PlayerView playerView, ImageView imageView, boolean isVideo) {
+    private void switchToImageOrVideo(PlayerView playerView, NestedScrollView textView, ImageView imageView,
+                                      boolean isVideo) {
         if (playerView != null) {
             playerView.setVisibility(isVideo ? View.VISIBLE : View.INVISIBLE);
             hideSystemUiWhenInLandscape();
         }
         if (imageView != null) {
             imageView.setVisibility(isVideo ? View.INVISIBLE : View.VISIBLE);
+        }
+        if (textView != null && textView.getLayoutParams() != null) {
+            textView.getLayoutParams().height = 0;
         }
     }
 
@@ -196,7 +222,7 @@ public class StepDetailFragment extends Fragment {
                         return;
                     }
                     imageView.post(() -> {
-                        switchToImageOrVideo(playerView, imageView, false);
+                        switchToImageOrVideo(playerView, textView, imageView, false);
                         Picasso.get().load(urlString).error(R.drawable.ic_food).into(imageView);
                     });
                 } else if (contentType.startsWith(VIDEO)) {
@@ -206,7 +232,7 @@ public class StepDetailFragment extends Fragment {
                     }
                     playerView.post(() -> {
                         initializePlayer();
-                        switchToImageOrVideo(playerView, imageView, true);
+                        switchToImageOrVideo(playerView, textView, imageView, true);
                     });
                 } else {
                     switchToOnlyText(playerView, textView, imageView);

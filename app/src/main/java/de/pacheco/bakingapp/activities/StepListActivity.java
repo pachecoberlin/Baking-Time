@@ -49,7 +49,7 @@ public class StepListActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_step_list);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         toolbar.setTitle(getTitle());
         ActionBar actionBar = getSupportActionBar();
@@ -174,8 +174,8 @@ public class StepListActivity extends AppCompatActivity {
 
             ViewHolder(View view) {
                 super(view);
-                mIdView = (TextView) view.findViewById(R.id.item_list_item_header);
-                mContentView = (TextView) view.findViewById(R.id.item_list_item_content);
+                mIdView = view.findViewById(R.id.item_list_item_header);
+                mContentView = view.findViewById(R.id.item_list_item_content);
             }
         }
     }

@@ -60,6 +60,6 @@ public class Ingredients implements Parcelable {
 
     @Override
     public String toString() {
-        return String.format(Locale.ENGLISH, "%7.1f %7s %s\n\n", quantity, measure, ingredient);
+        return String.format(Locale.ENGLISH, "%7.1f\t%7s\t%s\n\n", quantity, measure, ingredient);
     }
 }
