@@ -11,8 +11,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.NavUtils;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
 /**
  * An activity representing a single Item detail screen. This
  * activity is only used on narrow width devices. On tablet-size devices,
@@ -29,10 +27,10 @@ public class StepDetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_step_detail);
         Toolbar toolbar = findViewById(R.id.detail_toolbar);
         setSupportActionBar(toolbar);
-        FloatingActionButton nextStep = findViewById(R.id.next_step);
-        nextStep.setOnClickListener(view -> changeStep(1));
-        FloatingActionButton previousStep = findViewById(R.id.previous_step);
-        previousStep.setOnClickListener(view -> changeStep(-1));
+//  TODO clean up      FloatingActionButton nextStep = findViewById(R.id.next_step);
+//        nextStep.setOnClickListener(view -> changeStep(1));
+//        FloatingActionButton previousStep = findViewById(R.id.previous_step);
+//        previousStep.setOnClickListener(view -> changeStep(-1));
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
@@ -42,10 +40,10 @@ public class StepDetailActivity extends AppCompatActivity {
         }
     }
 
-    private void changeStep(int i) {
-        if (fragment != null)
-            fragment.refresh(i);
-    }
+//    private void changeStep(int i) {
+//        if (fragment != null)
+//            fragment.refresh(i);
+//    }
 
     private void startFragment() {
         Bundle arguments = new Bundle();

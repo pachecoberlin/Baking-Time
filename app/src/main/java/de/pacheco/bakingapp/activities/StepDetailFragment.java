@@ -32,6 +32,7 @@ import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.upstream.DataSource;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.squareup.picasso.Picasso;
 
 import java.net.URL;
@@ -149,6 +150,10 @@ public class StepDetailFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.step_detail, container, false);
+        FloatingActionButton nextStep = rootView.findViewById(R.id.next_step);
+        nextStep.setOnClickListener(view -> refresh(1));
+        FloatingActionButton previousStep = rootView.findViewById(R.id.previous_step);
+        previousStep.setOnClickListener(view -> refresh(-1));
         setStepContents();
         return rootView;
     }
