@@ -22,6 +22,8 @@ import com.google.android.material.snackbar.Snackbar;
  */
 public class StepDetailActivity extends AppCompatActivity {
 
+    private StepDetailFragment fragment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,12 +61,18 @@ public class StepDetailActivity extends AppCompatActivity {
             Bundle arguments = new Bundle();
             arguments.putInt(StepDetailFragment.STEPS_ID,
                     getIntent().getIntExtra(StepDetailFragment.STEPS_ID, -1));
-            StepDetailFragment fragment = new StepDetailFragment();
+            fragment = new StepDetailFragment();
             fragment.setArguments(arguments);
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.item_detail_container, fragment)
                     .commit();
         }
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus && fragment != null) fragment.onWindowFocusChanged();
     }
 
     @Override

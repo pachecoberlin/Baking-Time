@@ -55,6 +55,7 @@ public class StepDetailFragment extends Fragment {
     private Recipe recipe;
     private Steps step;
     private FragmentActivity activity;
+    private PlayerView playerView;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -94,11 +95,14 @@ public class StepDetailFragment extends Fragment {
         hideSystemUI();
     }
 
+    /**
+     * @Reviewer can you tell me best practices to enable full screen mode
+     * //TODO
+     * // https://developer.android.com/training/system-ui/immersive#java
+     */
     @SuppressWarnings("deprecation")
     private void hideSystemUI() {
-        // Enables regular immersive mode.
-        // https://developer.android.com/training/system-ui/immersive#java
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+        if (playerView.getVisibility() == View.VISIBLE && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             View decorView = activity.getWindow().getDecorView();
             decorView.setSystemUiVisibility(
                     View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
@@ -125,7 +129,7 @@ public class StepDetailFragment extends Fragment {
     private void setupPlayer(View rootView) {
         //TODO zeitpunkt vom play
         // weiterführen und nicht neu anfangen und so
-        PlayerView playerView = rootView.findViewById(R.id.playerView);
+        playerView = rootView.findViewById(R.id.playerView);
         NestedScrollView textView = rootView.findViewById(R.id.item_detail_scrollview);
         ImageView imageView = rootView.findViewById(R.id.step_image);
         String urlString = step.videoURL == null || step.videoURL.isEmpty() ? step.thumbnailURL : step.videoURL;
