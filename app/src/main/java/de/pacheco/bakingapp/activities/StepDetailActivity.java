@@ -28,15 +28,15 @@ public class StepDetailActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_step_detail);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.detail_toolbar);
+        Toolbar toolbar = findViewById(R.id.detail_toolbar);
         setSupportActionBar(toolbar);
 //TODO implement buttons
-        FloatingActionButton nextStep = (FloatingActionButton) findViewById(R.id.next_step);
+        FloatingActionButton nextStep = findViewById(R.id.next_step);
         nextStep.setOnClickListener(
                 view -> Snackbar.make(view, "Replace with your own detail action",
                         Snackbar.LENGTH_LONG).setAction("Action", null).show());
 
-        FloatingActionButton previousStep = (FloatingActionButton) findViewById(R.id.previous_step);
+        FloatingActionButton previousStep = findViewById(R.id.previous_step);
         previousStep.setOnClickListener(
                 view -> Snackbar.make(view, "Replace with your own detail action",
                         Snackbar.LENGTH_LONG).setAction("Action", null).show());
@@ -67,12 +67,6 @@ public class StepDetailActivity extends AppCompatActivity {
                     .add(R.id.item_detail_container, fragment)
                     .commit();
         }
-    }
-
-    @Override
-    public void onWindowFocusChanged(boolean hasFocus) {
-        super.onWindowFocusChanged(hasFocus);
-        if (hasFocus && fragment != null) fragment.onWindowFocusChanged();
     }
 
     @Override

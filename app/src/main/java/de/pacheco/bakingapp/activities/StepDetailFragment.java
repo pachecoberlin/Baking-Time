@@ -1,11 +1,13 @@
 package de.pacheco.bakingapp.activities;
 
 import de.pacheco.bakingapp.R;
+import de.pacheco.bakingapp.model.Ingredients;
 import de.pacheco.bakingapp.model.Recipe;
 import de.pacheco.bakingapp.model.Steps;
 import de.pacheco.bakingapp.utils.Utils;
 
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -15,18 +17,21 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 
+import com.google.android.exoplayer2.ExoPlayer;
+import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.source.MediaSource;
 import com.google.android.exoplayer2.source.ProgressiveMediaSource;
+import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.upstream.DataSource;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
+import com.google.android.exoplayer2.util.Util;
 import com.squareup.picasso.Picasso;
 
 import java.net.URL;
@@ -56,6 +61,13 @@ public class StepDetailFragment extends Fragment {
     private Steps step;
     private FragmentActivity activity;
     private PlayerView playerView;
+    private static SimpleExoPlayer player;
+    private static boolean playWhenReady = true;
+    private static int currentWindow = 0;
+    private static long playbackPosition = 0;
+    private String urlString;
+    private boolean isVideo = false;
+    private PlaybackStateListener playbackStateListener;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -91,21 +103,23 @@ public class StepDetailFragment extends Fragment {
         }
     }
 
-    public void onWindowFocusChanged() {
-        hideSystemUI();
-    }
-
     /**
-     * @Reviewer can you tell me best practices to enable full screen mode
+     * @Reviewer can you tell me best practices to enable full screen mode for playerview in
+     * landscapemode. Although this solution works, the method i am using is deprecated.
+     * <p>
+     * <p>
      * //TODO
-     * // https://developer.android.com/training/system-ui/immersive#java
+     * <p>
+     * https://developer.android.com/training/system-ui/immersive#java
      */
     @SuppressWarnings("deprecation")
-    private void hideSystemUI() {
-        if (playerView.getVisibility() == View.VISIBLE && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+    private void hideSystemUiWhenInLandscape() {
+        int orientation = getResources().getConfiguration().orientation;
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE && playerView != null && playerView.getVisibility() == View.VISIBLE && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             View decorView = activity.getWindow().getDecorView();
             decorView.setSystemUiVisibility(
-                    View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                    View.SYSTEM_UI_FLAG_LOW_PROFILE
+                            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
                             | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                             | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                             | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
@@ -118,25 +132,32 @@ public class StepDetailFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.step_detail, container, false);
         if (recipe != null) {
-            TextView textView = (TextView) rootView.findViewById(R.id.item_detail);
-            //TODO on step 0 set ingredients
-            textView.setText(step.description);
+            TextView textView = rootView.findViewById(R.id.item_detail);
+            String text = step.id == 0 ? getIngredients(recipe) : step.description;
+            textView.setText(text);
             setupPlayer(rootView);
         }
         return rootView;
     }
 
+    private String getIngredients(Recipe recipe) {
+        StringBuilder sb = new StringBuilder("Ingredients:\n\n");
+        for (Ingredients ingredient : recipe.ingredients) {
+            sb.append(ingredient.toString());
+        }
+        return sb.toString();
+    }
+
     private void setupPlayer(View rootView) {
-        //TODO zeitpunkt vom play
-        // weiterführen und nicht neu anfangen und so
         playerView = rootView.findViewById(R.id.playerView);
         NestedScrollView textView = rootView.findViewById(R.id.item_detail_scrollview);
         ImageView imageView = rootView.findViewById(R.id.step_image);
-        String urlString = step.videoURL == null || step.videoURL.isEmpty() ? step.thumbnailURL : step.videoURL;
+        urlString = step.videoURL == null || step.videoURL.isEmpty() ? step.thumbnailURL : step.videoURL;
         if (urlString == null || urlString.isEmpty()) {
             switchToOnlyText(playerView, textView, imageView);
             return;
         }
+        playbackStateListener = new PlaybackStateListener();
         Thread thread = new Thread(setPlayerOrImageContent(playerView, textView, imageView,
                 urlString));
         thread.start();
@@ -157,6 +178,7 @@ public class StepDetailFragment extends Fragment {
     private void switchToImageOrVideo(PlayerView playerView, ImageView imageView, boolean isVideo) {
         if (playerView != null) {
             playerView.setVisibility(isVideo ? View.VISIBLE : View.INVISIBLE);
+            hideSystemUiWhenInLandscape();
         }
         if (imageView != null) {
             imageView.setVisibility(isVideo ? View.INVISIBLE : View.VISIBLE);
@@ -178,22 +200,12 @@ public class StepDetailFragment extends Fragment {
                         Picasso.get().load(urlString).error(R.drawable.ic_food).into(imageView);
                     });
                 } else if (contentType.startsWith(VIDEO)) {
-                    if (playerView == null) {
+                    isVideo = true;
+                    if (playerView == null || activity == null) {
                         return;
                     }
-                    if (activity == null) {
-                        return;
-                    }
-                    SimpleExoPlayer player = new SimpleExoPlayer.Builder(activity).build();
-                    Uri uri = Uri.parse(urlString);
-                    DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(
-                            activity, "bakingStep");
-                    MediaSource mediaSource = new ProgressiveMediaSource.Factory(
-                            dataSourceFactory).createMediaSource(uri);
                     playerView.post(() -> {
-                        playerView.setPlayer(player);
-                        player.setPlayWhenReady(true);
-                        player.prepare(mediaSource, false, false);
+                        initializePlayer();
                         switchToImageOrVideo(playerView, imageView, true);
                     });
                 } else {
@@ -202,12 +214,87 @@ public class StepDetailFragment extends Fragment {
             } catch (Throwable e) {
                 Log.e(TAG, "Error while checking URL", e);
                 if (textView != null) {
-                    textView.post(() -> {
-                        switchToOnlyText(playerView, textView, imageView);
-                        Toast.makeText(activity, "ERROR", Toast.LENGTH_LONG).show();
-                    });
+                    textView.post(() -> switchToOnlyText(playerView, textView, imageView));
                 }
             }
         };
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (Util.SDK_INT <= 23) {
+            releasePlayer();
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (Util.SDK_INT > 23) {
+            releasePlayer();
+        }
+    }
+
+    private void initializePlayer() {
+        if (!isVideo) {
+            return;
+        }
+        if (player == null) {
+            DefaultTrackSelector trackSelector = new DefaultTrackSelector(activity);
+            trackSelector.setParameters(trackSelector.buildUponParameters().setMaxVideoSizeSd());
+            player = new SimpleExoPlayer.Builder(activity).setTrackSelector(trackSelector).build();
+        }
+        playerView.setPlayer(player);
+        Uri uri = Uri.parse(urlString);
+        MediaSource mediaSource = buildMediaSource(uri);
+        player.setPlayWhenReady(playWhenReady);
+        player.seekTo(currentWindow, playbackPosition);
+        player.addListener(playbackStateListener);
+        player.prepare(mediaSource, false, false);
+    }
+
+    private void releasePlayer() {
+        if (player != null) {
+            playbackPosition = player.getCurrentPosition();
+            currentWindow = player.getCurrentWindowIndex();
+            playWhenReady = player.getPlayWhenReady();
+            player.removeListener(playbackStateListener);
+            player.release();
+            player = null;
+        }
+    }
+
+    private MediaSource buildMediaSource(Uri uri) {
+        DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(activity, "bakingStep");
+        return new ProgressiveMediaSource.Factory(dataSourceFactory).createMediaSource(uri);
+    }
+
+    private static class PlaybackStateListener implements Player.EventListener {
+
+        @Override
+        public void onPlayerStateChanged(boolean playWhenReady,
+                                         int playbackState) {
+            String stateString;
+            switch (playbackState) {
+                case ExoPlayer.STATE_IDLE:
+                    stateString = "ExoPlayer.STATE_IDLE      -";
+                    break;
+                case ExoPlayer.STATE_BUFFERING:
+                    stateString = "ExoPlayer.STATE_BUFFERING -";
+                    break;
+                case ExoPlayer.STATE_READY:
+                    stateString = "ExoPlayer.STATE_READY     -";
+                    break;
+                case ExoPlayer.STATE_ENDED:
+                    stateString = "ExoPlayer.STATE_ENDED     -";
+                    break;
+                default:
+                    stateString = "UNKNOWN_STATE             -";
+                    break;
+            }
+            Log.d(TAG, "changed state to " + stateString
+                    + " playWhenReady: " + playWhenReady);
+        }
     }
 }

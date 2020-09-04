@@ -6,6 +6,8 @@ import android.os.Parcelable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.Locale;
+
 public class Ingredients implements Parcelable {
     public static final Creator<Ingredients> CREATOR = new Creator<Ingredients>() {
         @Override
@@ -53,5 +55,11 @@ public class Ingredients implements Parcelable {
         }
         parcel.writeString(measure);
         parcel.writeString(ingredient);
+    }
+
+
+    @Override
+    public String toString() {
+        return String.format(Locale.ENGLISH, "%7.1f %7s %s\n\n", quantity, measure, ingredient);
     }
 }
