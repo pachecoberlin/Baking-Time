@@ -7,6 +7,7 @@ import de.pacheco.bakingapp.utils.Utils;
 
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -54,7 +55,6 @@ public class StepDetailFragment extends Fragment {
     private Recipe recipe;
     private Steps step;
     private FragmentActivity activity;
-    private PlayerView playerView;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -90,11 +90,32 @@ public class StepDetailFragment extends Fragment {
         }
     }
 
+    public void onWindowFocusChanged() {
+        hideSystemUI();
+    }
+
+    @SuppressWarnings("deprecation")
+    private void hideSystemUI() {
+        // Enables regular immersive mode.
+        // https://developer.android.com/training/system-ui/immersive#java
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            View decorView = activity.getWindow().getDecorView();
+            decorView.setSystemUiVisibility(
+                    View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                            | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_FULLSCREEN);
+        }
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.step_detail, container, false);
         if (recipe != null) {
             TextView textView = (TextView) rootView.findViewById(R.id.item_detail);
+            //TODO on step 0 set ingredients
             textView.setText(step.description);
             setupPlayer(rootView);
         }
@@ -102,9 +123,9 @@ public class StepDetailFragment extends Fragment {
     }
 
     private void setupPlayer(View rootView) {
-        //TODO full video screen on rotating to landscape as well as zeitpunkt vom play
+        //TODO zeitpunkt vom play
         // weiterführen und nicht neu anfangen und so
-        playerView = rootView.findViewById(R.id.playerView);
+        PlayerView playerView = rootView.findViewById(R.id.playerView);
         NestedScrollView textView = rootView.findViewById(R.id.item_detail_scrollview);
         ImageView imageView = rootView.findViewById(R.id.step_image);
         String urlString = step.videoURL == null || step.videoURL.isEmpty() ? step.thumbnailURL : step.videoURL;
