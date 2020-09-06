@@ -40,7 +40,7 @@ public class StepListActivity extends AppCompatActivity {
      * Whether or not the activity is in two-pane mode, i.e. running on a tablet
      * device.
      */
-    private boolean mTwoPane;
+    public static boolean mTwoPane;
     private static final String BUNDLE_LAYOUT = "BUNDLE_LAYOUT";
 
     private LinearLayoutManager layoutManager;
@@ -63,18 +63,17 @@ public class StepListActivity extends AppCompatActivity {
         RecyclerView recyclerView = findViewById(R.id.item_list);
         assert recyclerView != null;
         layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+        SharedPreferences sp = getSharedPreferences(getString(R.string.recipe), 0);
         if (recipe == null) {
-            SharedPreferences sp = getSharedPreferences(getString(R.string.recipe), 0);
-            int recipeNumber = sp.getInt(StepDetailFragment.RECIPE_ID, -1);
+            int recipeNumber = sp.getInt(StepDetailFragment.RECIPE_ID, 1);
             recipe = RecipeListActivity.recipes.get(recipeNumber - 1);
-            if (recipe == null) {
-                return;
-            }
-            int stepId = sp.getInt(StepDetailFragment.STEPS_ID, 0);
-            int scrollPosition = Math.min(stepId, recipe.steps.size() - 1);
-            layoutManager.scrollToPosition(scrollPosition);
         }
-
+        if (recipe == null) {
+            return;
+        }
+        int stepId = getIntent().getIntExtra(StepDetailFragment.STEPS_ID, 0);
+        int scrollPosition = Math.min(stepId, recipe.steps.size() - 1);
+        layoutManager.scrollToPosition(scrollPosition);
         setTitle(recipe.name);
         setupRecyclerView(recyclerView, recipe);
     }

@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
@@ -59,7 +60,7 @@ public class StepDetailFragment extends Fragment {
      * The Recipe and Step number this fragment is presenting.
      */
     protected Recipe recipe;
-    private Steps step;
+    public Steps step;
     private FragmentActivity activity;
     private PlayerView playerView;
     private SimpleExoPlayer player;
@@ -83,7 +84,8 @@ public class StepDetailFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null && getArguments().containsKey(STEPS_ID)) {
-            int stepsId = getArguments().getInt(STEPS_ID);
+            int stepsId = savedInstanceState != null && savedInstanceState.getInt(STEPS_ID) >= 0 ?
+                    savedInstanceState.getInt(STEPS_ID) : getArguments().getInt(STEPS_ID);
             activity = this.getActivity();
             if (activity == null) {
                 return;
@@ -92,17 +94,39 @@ public class StepDetailFragment extends Fragment {
             if (recipe == null) {
                 return;
             }
-            //TODO das muss in on pause ode so
-            SharedPreferences sp = activity.getSharedPreferences(getString(R.string.recipe), 0);
-            SharedPreferences.Editor editor = sp.edit();
-            editor.putInt(RECIPE_ID, recipe.id);
-            editor.putInt(STEPS_ID, stepsId);
-            editor.apply();
+            saveStepIdInShared(stepsId);
             step = Utils.getStep(recipe.steps, stepsId);
             title = activity.findViewById(R.id.detail_title);
             setTitle();
         }
     }
+
+
+    //TODO in getArguments ist die falsche Steps ID drin... vllt müssen wir die aus
+    // savedInstanceState holen, vorher in onSave...speichern
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (step != null) {
+            outState.putInt(STEPS_ID, step.id);
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        saveStepIdInShared(step.id);
+        super.onDestroy();
+    }
+
+    private void saveStepIdInShared(int stepsId) {
+        SharedPreferences sp = activity.getSharedPreferences(getString(R.string.recipe), 0);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putInt(RECIPE_ID, recipe.id);
+        editor.putInt(STEPS_ID, stepsId);
+        editor.apply();
+    }
+
 
     private void setTitle() {
         if (title == null) {
@@ -115,9 +139,13 @@ public class StepDetailFragment extends Fragment {
         if (recipe == null || step == null) {
             return;
         }
-        int temp = step.id + increment;
-        int stepId = temp < 0 || temp >= recipe.steps.size() ? 0 : temp;
-        this.step = Utils.getStep(recipe.steps, stepId);
+        if (increment > 0) {
+            step = Utils.getNextStep(step.id, recipe);
+        } else {
+            step = Utils.getPreviousStep(step.id, recipe);
+        }
+        currentWindow = 0;
+        playbackPosition = 0L;
         setTitle();
         setStepContents();
     }
@@ -134,7 +162,7 @@ public class StepDetailFragment extends Fragment {
     @SuppressWarnings("deprecation")
     private void hideSystemUiWhenInLandscape() {
         int orientation = getResources().getConfiguration().orientation;
-        if (orientation == Configuration.ORIENTATION_LANDSCAPE && playerView != null && playerView.getVisibility() == View.VISIBLE && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+        if (!StepListActivity.mTwoPane && orientation == Configuration.ORIENTATION_LANDSCAPE && playerView != null && playerView.getVisibility() == View.VISIBLE && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             View decorView = activity.getWindow().getDecorView();
             decorView.setSystemUiVisibility(
                     View.SYSTEM_UI_FLAG_LOW_PROFILE
@@ -161,8 +189,10 @@ public class StepDetailFragment extends Fragment {
     private void setStepContents() {
         if (recipe != null) {
             TextView textView = rootView.findViewById(R.id.item_detail);
-            String text = step.id == 0 ? getIngredients(recipe) : step.description;
-            textView.setText(text);
+            if (step != null) {
+                String text = step.id == 0 ? getIngredients(recipe) : step.description;
+                textView.setText(text);
+            }
             setupPlayer(rootView);
         }
     }
@@ -179,6 +209,9 @@ public class StepDetailFragment extends Fragment {
         playerView = rootView.findViewById(R.id.playerView);
         NestedScrollView textView = rootView.findViewById(R.id.item_detail_scrollview);
         ImageView imageView = rootView.findViewById(R.id.step_image);
+        if (step == null) {
+            return;
+        }
         urlString = step.videoURL == null || step.videoURL.isEmpty() ? step.thumbnailURL : step.videoURL;
         if (urlString == null || urlString.isEmpty()) {
             switchToOnlyText(playerView, textView, imageView);

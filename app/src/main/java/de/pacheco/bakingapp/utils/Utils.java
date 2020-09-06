@@ -1,5 +1,6 @@
 package de.pacheco.bakingapp.utils;
 
+import de.pacheco.bakingapp.model.Recipe;
 import de.pacheco.bakingapp.model.Steps;
 
 import android.content.Context;
@@ -27,5 +28,33 @@ public class Utils {
             }
         }
         return null;
+    }
+
+    public static Steps getNextStep(int actualStepId, Recipe recipe) {
+        return getStep(actualStepId, recipe, true);
+    }
+
+    public static Steps getPreviousStep(int actualStepId, Recipe recipe) {
+        return getStep(actualStepId, recipe, false);
+    }
+
+    private static Steps getStep(int actualStepId, Recipe recipe, boolean next) {
+        if (next) {
+            actualStepId++;
+        } else {
+            actualStepId--;
+        }
+        actualStepId = actualStepId < 0 || actualStepId >= recipe.steps.size() ? 0 : actualStepId;
+        Steps step;
+        do {
+            step = Utils.getStep(recipe.steps, actualStepId);
+            if (next) {
+                actualStepId++;
+            } else {
+                actualStepId--;
+            }
+            actualStepId = actualStepId < 0 || actualStepId >= recipe.steps.size() ? 0 : actualStepId;
+        } while (step == null);
+        return step;
     }
 }

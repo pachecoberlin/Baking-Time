@@ -62,6 +62,7 @@ public class StepDetailActivity extends AppCompatActivity {
             Intent upIntent = new Intent(this, StepListActivity.class);
             if (fragment != null) {
                 upIntent.putExtra(getString(R.string.recipe), fragment.recipe);
+                upIntent.putExtra(StepDetailFragment.STEPS_ID, fragment.step.id);
             }
             NavUtils.navigateUpTo(this, upIntent);
             return true;
