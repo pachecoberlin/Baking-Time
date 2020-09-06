@@ -67,6 +67,7 @@ public class StepDetailFragment extends Fragment {
     private static boolean playWhenReady = true;
     private static int currentWindow = 0;
     private static long playbackPosition = 0;
+    private static String actualUrl = "";
     private String urlString;
     private boolean isVideo = false;
     private PlaybackStateListener playbackStateListener;
@@ -312,6 +313,11 @@ public class StepDetailFragment extends Fragment {
         playerView.setPlayer(player);
         Uri uri = Uri.parse(urlString);
         MediaSource mediaSource = buildMediaSource(uri);
+        if (!actualUrl.equals(urlString)) {
+            currentWindow = 0;
+            playbackPosition = 0L;
+            actualUrl = urlString == null ? "" : urlString;
+        }
         player.setPlayWhenReady(playWhenReady);
         player.seekTo(currentWindow, playbackPosition);
         player.addListener(playbackStateListener);
