@@ -1,7 +1,6 @@
 package de.pacheco.bakingapp.activities;
 
 import de.pacheco.bakingapp.R;
-import de.pacheco.bakingapp.model.Ingredient;
 import de.pacheco.bakingapp.model.Recipe;
 import de.pacheco.bakingapp.model.Step;
 import de.pacheco.bakingapp.utils.Utils;
@@ -187,19 +186,11 @@ public class StepDetailFragment extends Fragment {
         if (recipe != null) {
             TextView textView = rootView.findViewById(R.id.item_detail);
             if (step != null) {
-                String text = step.id == 0 ? getIngredients(recipe) : step.description;
+                String text = step.id == 0 ? Utils.getIngredients(recipe) : step.description;
                 textView.setText(text);
             }
             setupPlayer(rootView);
         }
-    }
-
-    private String getIngredients(Recipe recipe) {
-        StringBuilder sb = new StringBuilder("Ingredients:\n\n");
-        for (Ingredient ingredient : recipe.ingredients) {
-            sb.append(ingredient.toString());
-        }
-        return sb.toString();
     }
 
     private void setupPlayer(View rootView) {

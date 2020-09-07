@@ -13,11 +13,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <receiver android:name=".BakingTimeWidget">
+
+        <receiver
+            android:name=".BakingTimeWidget"
+            android:enabled="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="my.action.string" />
             </intent-filter>
-
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/baking_time_widget_info" />

@@ -1,5 +1,6 @@
 package de.pacheco.bakingapp.utils;
 
+import de.pacheco.bakingapp.model.Ingredient;
 import de.pacheco.bakingapp.model.Recipe;
 import de.pacheco.bakingapp.model.Step;
 
@@ -77,5 +78,13 @@ public class Utils {
             max.set(step.id > max.get() ? step.id : max.get());
         }
         return max.get();
+    }
+
+    public static String getIngredients(Recipe recipe) {
+        StringBuilder sb = new StringBuilder("Ingredients:\n\n");
+        for (Ingredient ingredient : recipe.ingredients) {
+            sb.append(ingredient.toString());
+        }
+        return sb.toString();
     }
 }

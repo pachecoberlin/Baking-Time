@@ -1,5 +1,6 @@
 package de.pacheco.bakingapp.activities;
 
+import de.pacheco.bakingapp.BakingTimeWidget;
 import de.pacheco.bakingapp.R;
 import de.pacheco.bakingapp.model.Recipe;
 import de.pacheco.bakingapp.model.RecipesViewModel;
@@ -7,6 +8,7 @@ import de.pacheco.bakingapp.utils.Utils;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,6 +40,7 @@ public class RecipeListActivity extends AppCompatActivity {
 
     private RecipeRecyclerViewAdapter recipeRecyclerViewAdapter;
     public static List<Recipe> recipes = Collections.emptyList();
+    private BakingTimeWidget receiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +52,15 @@ public class RecipeListActivity extends AppCompatActivity {
         assert recyclerView != null;
         setupRecyclerView((RecyclerView) recyclerView);
         setupViewModel();
+
+        receiver = new BakingTimeWidget();
+        registerReceiver(receiver, new IntentFilter("my.action.string"));
+    }
+
+    @Override
+    protected void onDestroy() {
+        unregisterReceiver(receiver);
+        super.onDestroy();
     }
 
     private void setupViewModel() {
@@ -73,8 +85,13 @@ public class RecipeListActivity extends AppCompatActivity {
         private final View.OnClickListener mOnClickListener = view -> {
             Context context = view.getContext();
             Intent intent = new Intent(context, StepListActivity.class);
-            intent.putExtra(context.getString(R.string.recipe), (Recipe) view.getTag());
+            Recipe recipe = (Recipe) view.getTag();
+            intent.putExtra(context.getString(R.string.recipe), recipe);
             context.startActivity(intent);
+
+            Intent widgetIntent = new Intent("my.action.string");
+            widgetIntent.putExtra("howto", Utils.getIngredients(recipe));
+            context.sendBroadcast(widgetIntent);
         };
         private List<Recipe> mValues;
 
