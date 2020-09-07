@@ -46,8 +46,10 @@
             style="?android:attr/textAppearanceLarge"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:foregroundGravity="center"
+            android:padding="16dp"
             android:textIsSelectable="true"
-            android:textSize="12sp" />
+            android:textSize="20sp" />
     </androidx.core.widget.NestedScrollView>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton

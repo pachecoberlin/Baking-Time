@@ -40,11 +40,6 @@ public class StepDetailActivity extends AppCompatActivity {
         }
     }
 
-//    private void changeStep(int i) {
-//        if (fragment != null)
-//            fragment.refresh(i);
-//    }
-
     private void startFragment() {
         Bundle arguments = new Bundle();
         int stepId = getIntent().getIntExtra(StepDetailFragment.STEPS_ID, -1);

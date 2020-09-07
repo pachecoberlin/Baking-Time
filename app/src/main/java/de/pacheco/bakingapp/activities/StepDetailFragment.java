@@ -102,10 +102,6 @@ public class StepDetailFragment extends Fragment {
         }
     }
 
-
-    //TODO in getArguments ist die falsche Steps ID drin... vllt müssen wir die aus
-    // savedInstanceState holen, vorher in onSave...speichern
-
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -128,7 +124,6 @@ public class StepDetailFragment extends Fragment {
         editor.apply();
     }
 
-
     private void setTitle() {
         if (title == null) {
             return;
@@ -147,6 +142,7 @@ public class StepDetailFragment extends Fragment {
         }
         currentWindow = 0;
         playbackPosition = 0L;
+        player.stop();
         setTitle();
         setStepContents();
     }

@@ -56,9 +56,7 @@ public class StepListActivity extends AppCompatActivity {
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
-        if (findViewById(R.id.item_detail_container) != null) {
-            mTwoPane = true;
-        }
+        mTwoPane = findViewById(R.id.item_detail_container) != null;
         Recipe recipe = getIntent().getParcelableExtra(this.getString(R.string.recipe));
         RecyclerView recyclerView = findViewById(R.id.item_list);
         assert recyclerView != null;
