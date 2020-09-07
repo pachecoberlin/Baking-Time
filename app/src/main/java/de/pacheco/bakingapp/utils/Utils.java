@@ -1,7 +1,7 @@
 package de.pacheco.bakingapp.utils;
 
 import de.pacheco.bakingapp.model.Recipe;
-import de.pacheco.bakingapp.model.Steps;
+import de.pacheco.bakingapp.model.Step;
 
 import android.content.Context;
 import android.util.DisplayMetrics;
@@ -20,8 +20,8 @@ public class Utils {
         return noOfColumns;
     }
 
-    public static Steps getStep(List<Steps> steps, int stepId) {
-        for (Steps step :
+    public static Step getStep(List<Step> steps, int stepId) {
+        for (Step step :
                 steps) {
             if (step.id == stepId) {
                 return step;
@@ -30,22 +30,22 @@ public class Utils {
         return null;
     }
 
-    public static Steps getNextStep(int actualStepId, Recipe recipe) {
+    public static Step getNextStep(int actualStepId, Recipe recipe) {
         return getStep(actualStepId, recipe, true);
     }
 
-    public static Steps getPreviousStep(int actualStepId, Recipe recipe) {
+    public static Step getPreviousStep(int actualStepId, Recipe recipe) {
         return getStep(actualStepId, recipe, false);
     }
 
-    private static Steps getStep(int actualStepId, Recipe recipe, boolean next) {
+    private static Step getStep(int actualStepId, Recipe recipe, boolean next) {
         if (next) {
             actualStepId++;
         } else {
             actualStepId--;
         }
         actualStepId = actualStepId < 0 || actualStepId >= recipe.steps.size() ? 0 : actualStepId;
-        Steps step;
+        Step step;
         do {
             step = Utils.getStep(recipe.steps, actualStepId);
             if (next) {

@@ -2,7 +2,7 @@ package de.pacheco.bakingapp.activities;
 
 import de.pacheco.bakingapp.R;
 import de.pacheco.bakingapp.model.Recipe;
-import de.pacheco.bakingapp.model.Steps;
+import de.pacheco.bakingapp.model.Step;
 
 import android.content.Context;
 import android.content.Intent;
@@ -110,16 +110,16 @@ public class StepListActivity extends AppCompatActivity {
     public static class SimpleItemRecyclerViewAdapter
             extends RecyclerView.Adapter<SimpleItemRecyclerViewAdapter.ViewHolder> {
         private final StepListActivity mParentActivity;
-        private final List<Steps> mValues;
+        private final List<Step> mValues;
         private final boolean mTwoPane;
         private final Recipe recipe;
         private final View.OnClickListener mOnClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Steps steps = (Steps) view.getTag();
+                Step step = (Step) view.getTag();
                 if (mTwoPane) {
                     Bundle arguments = new Bundle();
-                    arguments.putInt(StepDetailFragment.STEPS_ID, steps.id);
+                    arguments.putInt(StepDetailFragment.STEPS_ID, step.id);
                     arguments.putParcelable(view.getContext().getString(R.string.recipe),
                             recipe);
                     StepDetailFragment fragment = new StepDetailFragment();
@@ -130,7 +130,7 @@ public class StepListActivity extends AppCompatActivity {
                 } else {
                     Context context = view.getContext();
                     Intent intent = new Intent(context, StepDetailActivity.class);
-                    intent.putExtra(StepDetailFragment.STEPS_ID, steps.id);
+                    intent.putExtra(StepDetailFragment.STEPS_ID, step.id);
                     intent.putExtra(context.getString(R.string.recipe), recipe);
                     context.startActivity(intent);
                 }

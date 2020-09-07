@@ -17,11 +17,11 @@ public class Recipe implements Parcelable {
 
     @SerializedName("ingredients")
     @Expose
-    public List<Ingredients> ingredients;
+    public List<Ingredient> ingredients;
 
     @SerializedName("steps")
     @Expose
-    public List<Steps> steps;
+    public List<Step> steps;
 
     @SerializedName("name")
     @Expose
@@ -53,9 +53,9 @@ public class Recipe implements Parcelable {
         servings = in.readInt();
         image = in.readString();
         ingredients = new LinkedList<>();
-        in.readList(ingredients, Ingredients.class.getClassLoader());
+        in.readList(ingredients, Ingredient.class.getClassLoader());
         steps = new LinkedList<>();
-        in.readList(steps, Steps.class.getClassLoader());
+        in.readList(steps, Step.class.getClassLoader());
     }
 
     @Override

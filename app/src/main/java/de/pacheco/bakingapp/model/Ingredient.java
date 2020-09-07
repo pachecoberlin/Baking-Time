@@ -8,16 +8,16 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.Locale;
 
-public class Ingredients implements Parcelable {
-    public static final Creator<Ingredients> CREATOR = new Creator<Ingredients>() {
+public class Ingredient implements Parcelable {
+    public static final Creator<Ingredient> CREATOR = new Creator<Ingredient>() {
         @Override
-        public Ingredients createFromParcel(Parcel in) {
-            return new Ingredients(in);
+        public Ingredient createFromParcel(Parcel in) {
+            return new Ingredient(in);
         }
 
         @Override
-        public Ingredients[] newArray(int size) {
-            return new Ingredients[size];
+        public Ingredient[] newArray(int size) {
+            return new Ingredient[size];
         }
     };
     @SerializedName("quantity")
@@ -30,7 +30,7 @@ public class Ingredients implements Parcelable {
     @Expose
     public String ingredient;
 
-    protected Ingredients(Parcel in) {
+    protected Ingredient(Parcel in) {
         if (in.readByte() == 0) {
             quantity = null;
         } else {
@@ -60,6 +60,7 @@ public class Ingredients implements Parcelable {
 
     @Override
     public String toString() {
-        return String.format(Locale.ENGLISH, "%7.1f\t%7s\t%s\n\n", quantity, measure, ingredient);
+        return String.format(Locale.ENGLISH, "%-7.1f %-7s %s\n\n", quantity, measure,
+                ingredient);
     }
 }

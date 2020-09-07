@@ -1,9 +1,9 @@
 package de.pacheco.bakingapp.activities;
 
 import de.pacheco.bakingapp.R;
-import de.pacheco.bakingapp.model.Ingredients;
+import de.pacheco.bakingapp.model.Ingredient;
 import de.pacheco.bakingapp.model.Recipe;
-import de.pacheco.bakingapp.model.Steps;
+import de.pacheco.bakingapp.model.Step;
 import de.pacheco.bakingapp.utils.Utils;
 
 import android.content.SharedPreferences;
@@ -60,7 +60,7 @@ public class StepDetailFragment extends Fragment {
      * The Recipe and Step number this fragment is presenting.
      */
     protected Recipe recipe;
-    public Steps step;
+    public Step step;
     private FragmentActivity activity;
     private PlayerView playerView;
     private SimpleExoPlayer player;
@@ -196,7 +196,7 @@ public class StepDetailFragment extends Fragment {
 
     private String getIngredients(Recipe recipe) {
         StringBuilder sb = new StringBuilder("Ingredients:\n\n");
-        for (Ingredients ingredient : recipe.ingredients) {
+        for (Ingredient ingredient : recipe.ingredients) {
             sb.append(ingredient.toString());
         }
         return sb.toString();
