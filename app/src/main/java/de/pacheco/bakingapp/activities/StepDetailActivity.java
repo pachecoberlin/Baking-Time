@@ -27,10 +27,6 @@ public class StepDetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_step_detail);
         Toolbar toolbar = findViewById(R.id.detail_toolbar);
         setSupportActionBar(toolbar);
-//  TODO clean up      FloatingActionButton nextStep = findViewById(R.id.next_step);
-//        nextStep.setOnClickListener(view -> changeStep(1));
-//        FloatingActionButton previousStep = findViewById(R.id.previous_step);
-//        previousStep.setOnClickListener(view -> changeStep(-1));
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);

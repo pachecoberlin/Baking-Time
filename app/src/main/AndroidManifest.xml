@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     package="de.pacheco.bakingapp">
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -42,9 +41,7 @@
             android:label="@string/recipe_name"
             android:parentActivityName=".activities.RecipeListActivity"
             android:theme="@style/AppTheme.NoActionBar"
-            tools:targetApi="jelly_bean">
-
-            <!-- TODO what is  tools:targetApi="jelly_bean" -->
+           >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="de.pacheco.bakingapp.activities.RecipeListActivity" />
@@ -52,10 +49,7 @@
         <activity
             android:name=".activities.StepDetailActivity"
             android:parentActivityName=".activities.StepListActivity"
-            android:theme="@style/AppTheme.NoActionBar"
-            tools:targetApi="jelly_bean">
-
-            <!-- TODO what is  tools:targetApi="jelly_bean" -->
+            android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="de.pacheco.bakingapp.activities.StepListActivity" />

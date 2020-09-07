@@ -147,12 +147,8 @@ public class StepDetailFragment extends Fragment {
     }
 
     /**
-     * @Reviewer can you tell me best practices to enable full screen mode for playerview in
+     * TODO @Reviewer can you tell me best practices to enable full screen mode for playerview in
      * landscapemode. Although this solution works, the method i am using is deprecated.
-     * <p>
-     * <p>
-     * //TODO
-     * <p>
      * https://developer.android.com/training/system-ui/immersive#java
      */
     @SuppressWarnings("deprecation")
