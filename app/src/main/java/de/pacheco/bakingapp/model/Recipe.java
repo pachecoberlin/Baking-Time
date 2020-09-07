@@ -47,6 +47,10 @@ public class Recipe implements Parcelable {
         }
     };
 
+    public Recipe(List<Step> steps) {
+        this.steps = steps;
+    }
+
     protected Recipe(Parcel in) {
         id = in.readInt();
         name = in.readString();

@@ -7,6 +7,7 @@ import android.content.Context;
 import android.util.DisplayMetrics;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Utils {
 
@@ -21,8 +22,7 @@ public class Utils {
     }
 
     public static Step getStep(List<Step> steps, int stepId) {
-        for (Step step :
-                steps) {
+        for (Step step : steps) {
             if (step.id == stepId) {
                 return step;
             }
@@ -39,22 +39,43 @@ public class Utils {
     }
 
     private static Step getStep(int actualStepId, Recipe recipe, boolean next) {
-        if (next) {
-            actualStepId++;
-        } else {
-            actualStepId--;
-        }
-        actualStepId = actualStepId < 0 || actualStepId >= recipe.steps.size() ? 0 : actualStepId;
+//        Step actualStep = getStep(recipe.steps, actualStepId);
+////        actualStepId
+//        if (next) {
+//            actualStepId++;
+//        } else {
+//            actualStepId--;
+//        }
+//        actualStepId = actualStepId < 0 || actualStepId >= recipe.steps.size() ? 0 : actualStepId;
         Step step;
         do {
-            step = Utils.getStep(recipe.steps, actualStepId);
             if (next) {
                 actualStepId++;
             } else {
                 actualStepId--;
             }
-            actualStepId = actualStepId < 0 || actualStepId >= recipe.steps.size() ? 0 : actualStepId;
+            actualStepId =
+                    actualStepId < minStep(recipe.steps) || actualStepId >= maxStep(recipe.steps) ?
+                            minStep(recipe.steps) :
+                            actualStepId;
+            step = Utils.getStep(recipe.steps, actualStepId);
         } while (step == null);
         return step;
+    }
+
+    private static int minStep(List<Step> steps) {
+        AtomicInteger min = new AtomicInteger(Integer.MAX_VALUE);
+        for (Step step : steps) {
+            min.set(step.id > min.get() ? min.get() : step.id);
+        }
+        return min.get();
+    }
+
+    private static int maxStep(List<Step> steps) {
+        AtomicInteger max = new AtomicInteger(Integer.MIN_VALUE);
+        for (Step step : steps) {
+            max.set(step.id > max.get() ? step.id : max.get());
+        }
+        return max.get();
     }
 }
