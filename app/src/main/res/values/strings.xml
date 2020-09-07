@@ -14,4 +14,6 @@
     <string name="servings">Nice for %1$d people</string>
     <string name="recipe">Recipe</string>
     <string name="image_of_food">Image of Food</string>
+    <string name="appwidget_text">Choose a recipe</string>
+    <string name="add_widget">Add widget</string>
 </resources>

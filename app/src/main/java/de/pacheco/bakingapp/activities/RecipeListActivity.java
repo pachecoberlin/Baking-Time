@@ -30,7 +30,6 @@ import java.util.List;
 /**
  * TODO Widget displays ingredient list for desired recipe.
  * TODO Application has a companion homescreen widget.
- * TODO Application makes use of Espresso to test aspects of the UI.
  * <p>
  * <p>
  * TODO props to         //        <div>Icon made from <a href="http://www.onlinewebfonts.com/icon">Icon Fonts</a> is licensed by CC BY 3.0</div>
