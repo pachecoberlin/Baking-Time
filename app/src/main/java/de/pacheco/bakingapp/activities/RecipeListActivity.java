@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -30,11 +31,8 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * TODO Widget displays ingredient list for desired recipe.
- * TODO Application has a companion homescreen widget.
- * <p>
- * <p>
- * TODO props to         //        <div>Icon made from <a href="http://www.onlinewebfonts.com/icon">Icon Fonts</a> is licensed by CC BY 3.0</div>
+ * Props for image to:
+ * <div>Icon made from <a href="http://www.onlinewebfonts.com/icon">Icon Fonts</a> is licensed by CC BY 3.0</div>
  */
 public class RecipeListActivity extends AppCompatActivity {
 
@@ -52,7 +50,10 @@ public class RecipeListActivity extends AppCompatActivity {
         assert recyclerView != null;
         setupRecyclerView((RecyclerView) recyclerView);
         setupViewModel();
-
+        Toast.makeText(this, "A Picture is taking from <div>Icon made from <a href=\"http://www" +
+                        ".onlinewebfonts" +
+                        ".com/icon\">Icon Fonts</a> is licensed by CC BY 3.0</div>",
+                Toast.LENGTH_LONG).show();
         receiver = new BakingTimeWidget();
         registerReceiver(receiver, new IntentFilter("my.action.string"));
     }
