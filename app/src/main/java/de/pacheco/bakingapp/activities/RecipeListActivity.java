@@ -90,7 +90,7 @@ public class RecipeListActivity extends AppCompatActivity {
             context.startActivity(intent);
 
             Intent widgetIntent = new Intent("my.action.string");
-            widgetIntent.putExtra("howto", Utils.getIngredients(recipe));
+            widgetIntent.putExtra("howto", Utils.getIngredients(recipe).replace("\n\n", "\n"));
             context.sendBroadcast(widgetIntent);
         };
         private List<Recipe> mValues;
