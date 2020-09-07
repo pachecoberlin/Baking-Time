@@ -25,8 +25,6 @@ public class BakingTimeWidget extends AppWidgetProvider {
         configIntent.putExtra("widgetId", appWidgetId);
         PendingIntent configPendingIntent = PendingIntent.getActivity(context, 0, configIntent, 0);
         views.setOnClickPendingIntent(R.id.appwidget_text, configPendingIntent);
-
-        // Instruct the widget manager to update the widget
         appWidgetManager.updateAppWidget(appWidgetId, views);
     }
 
