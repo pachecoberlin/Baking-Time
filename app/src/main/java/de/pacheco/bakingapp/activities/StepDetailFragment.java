@@ -8,7 +8,6 @@ import de.pacheco.bakingapp.utils.Utils;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -148,15 +147,9 @@ public class StepDetailFragment extends Fragment {
         setStepContents();
     }
 
-    /**
-     * TODO @Reviewer can you tell me best practices to enable full screen mode for playerview in
-     * landscapemode. Although this solution works, the method i am using is deprecated.
-     * https://developer.android.com/training/system-ui/immersive#java
-     */
-    @SuppressWarnings("deprecation")
     private void hideSystemUiWhenInLandscape() {
         int orientation = getResources().getConfiguration().orientation;
-        if (!StepListActivity.mTwoPane && orientation == Configuration.ORIENTATION_LANDSCAPE && playerView != null && playerView.getVisibility() == View.VISIBLE && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+        if (!StepListActivity.mTwoPane && orientation == Configuration.ORIENTATION_LANDSCAPE && playerView != null && playerView.getVisibility() == View.VISIBLE) {
             View decorView = activity.getWindow().getDecorView();
             decorView.setSystemUiVisibility(
                     View.SYSTEM_UI_FLAG_LOW_PROFILE
