@@ -16,4 +16,6 @@
     <string name="image_of_food">Image of Food</string>
     <string name="appwidget_text">Choose a recipe</string>
     <string name="add_widget">Add widget</string>
+    <string name="next_recipe">Next Recipe</string>
+    <string name="previous_recipe">Previous Recipe</string>
 </resources>

@@ -19,6 +19,28 @@
             android:layout_height="?attr/actionBarSize"
             app:popupTheme="@style/AppTheme.PopupOverlay" />
 
+        <LinearLayout
+            android:id="@+id/buttons"
+            style="?android:buttonBarStyle"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:theme="@style/Theme.MaterialComponents">
+
+            <Button
+                android:id="@+id/previous_recipe"
+                style="?android:buttonBarButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/previous_recipe" />
+
+            <Button
+                android:id="@+id/next_recipe"
+                style="?android:buttonBarButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/next_recipe" />
+        </LinearLayout>
+
     </com.google.android.material.appbar.AppBarLayout>
 
     <LinearLayout

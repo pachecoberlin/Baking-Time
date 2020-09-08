@@ -3,6 +3,7 @@ package de.pacheco.bakingapp.activities;
 import de.pacheco.bakingapp.R;
 import de.pacheco.bakingapp.model.Recipe;
 import de.pacheco.bakingapp.model.Step;
+import de.pacheco.bakingapp.utils.Utils;
 
 import android.content.Context;
 import android.content.Intent;
@@ -69,11 +70,36 @@ public class StepListActivity extends AppCompatActivity {
         if (recipe == null) {
             return;
         }
+        setNavigationButtonListeners(recipe);
         int stepId = getIntent().getIntExtra(StepDetailFragment.STEPS_ID, 0);
         int scrollPosition = Math.min(stepId, recipe.steps.size() - 1);
         layoutManager.scrollToPosition(scrollPosition);
         setTitle(recipe.name);
         setupRecyclerView(recyclerView, recipe);
+    }
+
+    private void setNavigationButtonListeners(Recipe recipe) {
+        View nextButton = findViewById(R.id.next_recipe);
+        nextButton.setOnClickListener(view -> {
+            Recipe nextRecipe = Utils.getNextRecipe(recipe);
+            changeRecipe(view, nextRecipe);
+        });
+        View previousButton = findViewById(R.id.previous_recipe);
+        previousButton.setOnClickListener(view -> {
+            Recipe prevRecipe = Utils.getPreviousRecipe(recipe);
+            changeRecipe(view, prevRecipe);
+        });
+
+    }
+
+    public void changeRecipe(View view, Recipe recipe) {
+        Context context = view.getContext();
+        Intent intent = new Intent(context, StepListActivity.class);
+        intent.putExtra(context.getString(R.string.recipe), recipe);
+        context.startActivity(intent);
+        Intent widgetIntent = new Intent("my.action.string");
+        widgetIntent.putExtra("howto", Utils.getIngredients(recipe).replace("\n\n", "\n"));
+        context.sendBroadcast(widgetIntent);
     }
 
     @Override
