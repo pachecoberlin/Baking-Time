@@ -1,5 +1,6 @@
 package de.pacheco.bakingapp.utils;
 
+import de.pacheco.bakingapp.activities.RecipeListActivity;
 import de.pacheco.bakingapp.model.Ingredient;
 import de.pacheco.bakingapp.model.Recipe;
 import de.pacheco.bakingapp.model.Step;
@@ -7,6 +8,7 @@ import de.pacheco.bakingapp.model.Step;
 import android.content.Context;
 import android.util.DisplayMetrics;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -86,5 +88,35 @@ public class Utils {
             sb.append(ingredient.toString());
         }
         return sb.toString();
+    }
+
+    public static Recipe getNextRecipe(Recipe recipe) {
+        if (RecipeListActivity.recipes.isEmpty()) {
+            return recipe;
+        }
+        for (Iterator<Recipe> it = RecipeListActivity.recipes.iterator(); it.hasNext(); ) {
+            Recipe actualRecipe = it.next();
+            if (actualRecipe.id != recipe.id) {
+                continue;
+            }
+            return it.hasNext() ? it.next() : RecipeListActivity.recipes.get(0);
+        }
+        return recipe;
+    }
+
+    public static Recipe getPreviousRecipe(Recipe recipe) {
+        if (RecipeListActivity.recipes.isEmpty()) {
+            return recipe;
+        }
+        for (Recipe actualRecipe : RecipeListActivity.recipes) {
+            if (actualRecipe.id != recipe.id) {
+                continue;
+            }
+            int indexOf = RecipeListActivity.recipes.indexOf(actualRecipe);
+            return indexOf - 1 < 0 ? RecipeListActivity.recipes.get(
+                    RecipeListActivity.recipes.size() - 1) : RecipeListActivity.recipes.get(
+                    indexOf - 1);
+        }
+        return recipe;
     }
 }
