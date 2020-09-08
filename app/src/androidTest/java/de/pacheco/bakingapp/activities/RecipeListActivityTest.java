@@ -64,6 +64,9 @@ public class RecipeListActivityTest {
                                 0)));
         recyclerView.perform(actionOnItemAtPosition(0, click()));
 
+        /*
+          TODO @Reviewer how do you get the navigate up button, when locale not set to english?
+         */
         ViewInteraction appCompatImageButton = onView(
                 allOf(withContentDescription("Navigate up"),
                         childAtPosition(

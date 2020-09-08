@@ -141,7 +141,9 @@ public class StepDetailFragment extends Fragment {
         }
         currentWindow = 0;
         playbackPosition = 0L;
-        player.stop();
+        if (player != null) {
+            player.stop();
+        }
         setTitle();
         setStepContents();
     }
