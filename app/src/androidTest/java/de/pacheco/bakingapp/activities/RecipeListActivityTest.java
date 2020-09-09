@@ -7,6 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 
+import androidx.test.espresso.IdlingRegistry;
+import androidx.test.espresso.IdlingResource;
 import androidx.test.espresso.ViewInteraction;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
@@ -15,6 +17,8 @@ import androidx.test.rule.ActivityTestRule;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -35,6 +39,7 @@ public class RecipeListActivityTest {
     @Rule
     public ActivityTestRule<RecipeListActivity> mActivityTestRule = new ActivityTestRule<>(
             RecipeListActivity.class);
+    private IdlingResource idlingResource;
 
     private static Matcher<View> childAtPosition(
             final Matcher<View> parentMatcher, final int position) {
@@ -53,6 +58,19 @@ public class RecipeListActivityTest {
                         && view.equals(((ViewGroup) parent).getChildAt(position));
             }
         };
+    }
+
+    @Before
+    public void registerIdlingResource() {
+        idlingResource = mActivityTestRule.getActivity().getIdlingResource();
+        IdlingRegistry.getInstance().register(idlingResource);
+    }
+
+    @After
+    public void unregisterIdlingResource() {
+        if (idlingResource != null) {
+            IdlingRegistry.getInstance().unregister(idlingResource);
+        }
     }
 
     @Test

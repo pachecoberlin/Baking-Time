@@ -4,6 +4,7 @@ import de.pacheco.bakingapp.BakingTimeWidget;
 import de.pacheco.bakingapp.R;
 import de.pacheco.bakingapp.model.Recipe;
 import de.pacheco.bakingapp.model.RecipesViewModel;
+import de.pacheco.bakingapp.utils.SimpleIdlingResource;
 import de.pacheco.bakingapp.utils.Utils;
 
 import android.content.Context;
@@ -18,11 +19,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.VisibleForTesting;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.test.espresso.IdlingResource;
 
 import com.google.android.material.card.MaterialCardView;
 import com.squareup.picasso.Picasso;
@@ -36,6 +40,10 @@ import java.util.List;
  */
 public class RecipeListActivity extends AppCompatActivity {
 
+    //TODO @Reviewer how am i supposed to create the IdlingResource in my Test before the
+    // onCreate method is called? Because now i create and assign it allways not only in Tests.
+    @Nullable
+    private SimpleIdlingResource idlingResource = new SimpleIdlingResource();
     private RecipeRecyclerViewAdapter recipeRecyclerViewAdapter;
     public static List<Recipe> recipes = Collections.emptyList();
     private BakingTimeWidget receiver;
@@ -66,10 +74,12 @@ public class RecipeListActivity extends AppCompatActivity {
 
     private void setupViewModel() {
         RecipesViewModel recipesViewModel = new ViewModelProvider(this).get(RecipesViewModel.class);
+        if (idlingResource != null) idlingResource.setIdleState(false);
         recipesViewModel.getRecipes().observe(this, list -> {
             recipes = list;
             recipeRecyclerViewAdapter.setRecipes(recipes);
             recipeRecyclerViewAdapter.notifyDataSetChanged();
+            if (idlingResource != null) idlingResource.setIdleState(true);
         });
     }
 
@@ -78,6 +88,18 @@ public class RecipeListActivity extends AppCompatActivity {
                 GridLayoutManager.VERTICAL, false));
         recipeRecyclerViewAdapter = new RecipeRecyclerViewAdapter(recipes, this);
         recyclerView.setAdapter(recipeRecyclerViewAdapter);
+    }
+
+    /**
+     * Only called from test, creates and returns a new {@link SimpleIdlingResource}.
+     */
+    @VisibleForTesting
+    @NonNull
+    public IdlingResource getIdlingResource() {
+        if (idlingResource == null) {
+            idlingResource = new SimpleIdlingResource();
+        }
+        return idlingResource;
     }
 
     public static class RecipeRecyclerViewAdapter
@@ -124,7 +146,7 @@ public class RecipeListActivity extends AppCompatActivity {
 
         @Override
         public int getItemCount() {
-            return mValues.size();
+            return mValues == null ? 0 : mValues.size();
         }
 
         public void setRecipes(List<Recipe> recipes) {
