@@ -3,7 +3,6 @@
     android:layout_height="match_parent"
     android:background="#09C"
     android:padding="@dimen/widget_margin">
-<!--   TODO @Reviewer how to implement scrollable text in widget-->
     <TextView
         android:id="@+id/appwidget_text"
         android:layout_width="wrap_content"
